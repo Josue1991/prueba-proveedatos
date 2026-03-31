@@ -1,0 +1,25 @@
+# Docker volumes / data
+mysql_data/
+db/data/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# PHP dependencies (si se usa Composer en el futuro)
+Api/vendor/
+
+# Logs
+*.log
+Api/logs/
+
+# Environment overrides locales
+.env
+.env.local

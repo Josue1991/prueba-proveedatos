@@ -1,0 +1,92 @@
+<div>
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
+        <h4 class="mb-2"><i class="bi bi-people"></i> Listado de contactos</h4>
+        <div>
+            <button class="btn btn-success btn-sm mr-1" ng-click="vm.exportar('excel')" title="Exportar Excel">
+                <i class="bi bi-file-earmark-excel"></i> Exportar Excel
+            </button>
+            <button class="btn btn-danger btn-sm mr-1" ng-click="vm.exportar('pdf')" title="Exportar PDF">
+                <i class="bi bi-file-earmark-pdf"></i> Exportar PDF
+            </button>
+            <a href="#!/nuevo" class="btn btn-primary btn-sm">
+                <i class="bi bi-plus-circle"></i> Nuevo
+            </a>
+        </div>
+    </div>
+
+    <div ng-if="vm.loading" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status"></div>
+    </div>
+
+    <div ng-if="vm.error" class="alert alert-danger">{{ vm.error }}</div>
+
+    <div ng-if="!vm.loading && !vm.error">
+        <div ng-if="vm.contactos.length === 0" class="alert alert-info">
+            No hay contactos registrados aún.
+        </div>
+
+        <div ng-if="vm.contactos.length > 0">
+            <p class="text-muted small mb-1">
+                <i class="bi bi-info-circle"></i>
+                Haz clic en el encabezado de cada columna para ordenar.
+            </p>
+            <div class="table-responsive shadow-sm">
+                <table class="table table-striped table-hover table-bordered bg-white mb-0">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th ng-click="vm.sortBy('id')" ng-class="vm.thClass('id')">
+                                # <i ng-class="vm.sortIcon('id')"></i>
+                            </th>
+                            <th ng-click="vm.sortBy('nombre')" ng-class="vm.thClass('nombre')">
+                                Nombre <i ng-class="vm.sortIcon('nombre')"></i>
+                            </th>
+                            <th ng-click="vm.sortBy('email')" ng-class="vm.thClass('email')">
+                                Email <i ng-class="vm.sortIcon('email')"></i>
+                            </th>
+                            <th ng-click="vm.sortBy('telefono')" ng-class="vm.thClass('telefono')">
+                                Teléfono <i ng-class="vm.sortIcon('telefono')"></i>
+                            </th>
+                            <th ng-click="vm.sortBy('ciudad')" ng-class="vm.thClass('ciudad')">
+                                Ciudad <i ng-class="vm.sortIcon('ciudad')"></i>
+                            </th>
+                            <th ng-click="vm.sortBy('created_at')" ng-class="vm.thClass('created_at')">
+                                Registrado <i ng-class="vm.sortIcon('created_at')"></i>
+                            </th>
+                            <th class="text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="c in vm.contactos | orderBy:vm.orderBy:vm.orderDesc">
+                            <td>{{ c.id }}</td>
+                            <td>{{ c.nombre }}</td>
+                            <td>{{ c.email }}</td>
+                            <td>{{ c.telefono }}</td>
+                            <td>{{ c.ciudad || '—' }}</td>
+                            <td>{{ c.created_at | date:'dd/MM/yyyy HH:mm' }}</td>
+                            <td class="text-center action-buttons">
+                                <button class="btn btn-outline-info btn-sm"
+                                        ng-click="vm.ver(c.id)"
+                                        title="Ver detalle">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                                <button class="btn btn-outline-warning btn-sm"
+                                        ng-click="vm.editar(c.id)"
+                                        title="Editar">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button class="btn btn-outline-danger btn-sm"
+                                        ng-click="vm.eliminar(c.id)"
+                                        title="Eliminar">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <small class="text-muted mt-1 d-block">
+                Total: {{ vm.contactos.length }} registros
+            </small>
+        </div>
+    </div>
+</div>

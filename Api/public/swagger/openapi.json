@@ -1,0 +1,188 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Proovedatos API",
+    "description": "REST API para gestión de contactos y reportes de exportación.\n\n**Base URL:** `http://localhost:8080`",
+    "version": "1.0.0",
+    "contact": { "name": "Proovedatos" }
+  },
+  "servers": [
+    { "url": "http://localhost:8080", "description": "Docker local" }
+  ],
+  "tags": [
+    { "name": "Contactos", "description": "CRUD de la tabla contacto" },
+    { "name": "Exportar",  "description": "Generación y descarga de reportes" },
+    { "name": "Reportes",  "description": "Historial y aprobación de exportaciones" }
+  ],
+  "paths": {
+    "/api/contactos": {
+      "get": {
+        "tags": ["Contactos"],
+        "summary": "Listar todos los contactos",
+        "responses": {
+          "200": {
+            "description": "Lista de contactos",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ContactoListResponse" } } }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Contactos"],
+        "summary": "Crear un contacto",
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ContactoInput" } } }
+        },
+        "responses": {
+          "201": { "description": "Contacto creado", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ContactoResponse" } } } },
+          "422": { "description": "Datos inválidos", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+        }
+      }
+    },
+    "/api/contactos/{id}": {
+      "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }],
+      "get": {
+        "tags": ["Contactos"],
+        "summary": "Obtener contacto por ID",
+        "responses": {
+          "200": { "description": "Contacto encontrado", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ContactoResponse" } } } },
+          "404": { "description": "No encontrado",         "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+        }
+      },
+      "put": {
+        "tags": ["Contactos"],
+        "summary": "Actualizar contacto",
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ContactoInput" } } }
+        },
+        "responses": {
+          "200": { "description": "Contacto actualizado", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ContactoResponse" } } } },
+          "404": { "description": "No encontrado",        "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
+          "422": { "description": "Datos inválidos",      "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+        }
+      },
+      "delete": {
+        "tags": ["Contactos"],
+        "summary": "Eliminar contacto",
+        "responses": {
+          "204": { "description": "Eliminado correctamente" },
+          "404": { "description": "No encontrado", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+        }
+      }
+    },
+    "/api/contactos/export": {
+      "get": {
+        "tags": ["Exportar"],
+        "summary": "Exportar contactos (Excel o PDF)",
+        "description": "Genera y descarga el listado de contactos. El export queda registrado en la tabla `reporte`.",
+        "parameters": [
+          {
+            "name": "format",
+            "in": "query",
+            "required": false,
+            "description": "Formato de exportación",
+            "schema": { "type": "string", "enum": ["excel", "pdf"], "default": "excel" }
+          },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "required": false,
+            "description": "Campo por el que ordenar",
+            "schema": { "type": "string", "enum": ["id","nombre","email","telefono","ciudad","created_at"], "default": "created_at" }
+          },
+          {
+            "name": "dir",
+            "in": "query",
+            "required": false,
+            "description": "Dirección del ordenamiento",
+            "schema": { "type": "string", "enum": ["asc","desc"], "default": "asc" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Archivo descargado (application/vnd.ms-excel o text/html para PDF)" }
+        }
+      }
+    },
+    "/api/reportes": {
+      "get": {
+        "tags": ["Reportes"],
+        "summary": "Listar historial de exportaciones",
+        "responses": {
+          "200": {
+            "description": "Lista de reportes",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ReporteListResponse" } } }
+          }
+        }
+      }
+    },
+    "/api/reportes/{id}": {
+      "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }],
+      "put": {
+        "tags": ["Reportes"],
+        "summary": "Actualizar estado de aprobación",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["estado"],
+                "properties": {
+                  "estado": { "type": "string", "enum": ["pendiente","aprobado","rechazado"] }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Estado actualizado", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ReporteResponse" } } } },
+          "404": { "description": "No encontrado",      "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
+          "422": { "description": "Estado inválido",    "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Contacto": {
+        "type": "object",
+        "properties": {
+          "id":         { "type": "integer",  "example": 1 },
+          "nombre":     { "type": "string",   "example": "Juan Pérez" },
+          "email":      { "type": "string",   "format": "email", "example": "juan@example.com" },
+          "telefono":   { "type": "string",   "example": "+593987654321" },
+          "ciudad":     { "type": "string",   "nullable": true, "example": "Quito" },
+          "created_at": { "type": "string",   "format": "date-time" }
+        }
+      },
+      "ContactoInput": {
+        "type": "object",
+        "required": ["nombre","email","telefono"],
+        "properties": {
+          "nombre":   { "type": "string", "maxLength": 100 },
+          "email":    { "type": "string", "format": "email", "maxLength": 100 },
+          "telefono": { "type": "string", "maxLength": 20,   "example": "+593987654321" },
+          "ciudad":   { "type": "string", "maxLength": 100,  "nullable": true }
+        }
+      },
+      "Reporte": {
+        "type": "object",
+        "properties": {
+          "id":              { "type": "integer" },
+          "formato":         { "type": "string", "enum": ["excel","pdf"] },
+          "ordenado_por":    { "type": "string" },
+          "direccion":       { "type": "string", "enum": ["asc","desc"] },
+          "total_registros": { "type": "integer" },
+          "estado":          { "type": "string", "enum": ["pendiente","aprobado","rechazado"] },
+          "created_at":      { "type": "string", "format": "date-time" }
+        }
+      },
+      "ContactoResponse":     { "type": "object", "properties": { "success": { "type": "boolean" }, "data": { "$ref": "#/components/schemas/Contacto" } } },
+      "ContactoListResponse": { "type": "object", "properties": { "success": { "type": "boolean" }, "data": { "type": "array", "items": { "$ref": "#/components/schemas/Contacto" } } } },
+      "ReporteResponse":      { "type": "object", "properties": { "success": { "type": "boolean" }, "data": { "$ref": "#/components/schemas/Reporte" } } },
+      "ReporteListResponse":  { "type": "object", "properties": { "success": { "type": "boolean" }, "data": { "type": "array",  "items": { "$ref": "#/components/schemas/Reporte" } } } },
+      "ErrorResponse":        { "type": "object", "properties": { "success": { "type": "boolean", "example": false }, "error": { "type": "string" } } }
+    }
+  }
+}

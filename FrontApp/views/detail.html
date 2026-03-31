@@ -1,0 +1,39 @@
+<div class="row justify-content-center">
+    <div class="col-md-6">
+
+        <div ng-if="vm.error" class="alert alert-danger">{{ vm.error }}</div>
+
+        <div ng-if="vm.contacto" class="card shadow-sm">
+            <div class="card-header bg-info text-white d-flex align-items-center">
+                <i class="bi bi-person-badge mr-2"></i>
+                <h5 class="mb-0">{{ vm.contacto.nombre }}</h5>
+            </div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">Email</dt>
+                    <dd class="col-sm-8">{{ vm.contacto.email }}</dd>
+
+                    <dt class="col-sm-4">Teléfono</dt>
+                    <dd class="col-sm-8">{{ vm.contacto.telefono }}</dd>
+
+                    <dt class="col-sm-4">Ciudad</dt>
+                    <dd class="col-sm-8">{{ vm.contacto.ciudad || '—' }}</dd>
+
+                    <dt class="col-sm-4">Registrado</dt>
+                    <dd class="col-sm-8">{{ vm.contacto.created_at | date:'dd/MM/yyyy HH:mm' }}</dd>
+                </dl>
+            </div>
+            <div class="card-footer d-flex">
+                <button class="btn btn-warning btn-sm mr-2"
+                        ng-click="vm.editar(vm.contacto.id)">
+                    <i class="bi bi-pencil"></i> Editar
+                </button>
+                <button class="btn btn-secondary btn-sm"
+                        ng-click="vm.volver()">
+                    <i class="bi bi-arrow-left"></i> Volver
+                </button>
+            </div>
+        </div>
+
+    </div>
+</div>
