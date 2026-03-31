@@ -54,12 +54,12 @@
                         <label class="font-weight-bold">Región <span class="text-danger">*</span></label>
                         <select class="form-control"
                                 ng-model="vm.selectedRegionId"
+                                ng-options="r.id as r.nombre_region for r in vm.regiones"
                                 ng-change="vm.onRegionChange()"
                                 required
                                 name="region"
                                 ng-class="{'is-invalid': contactoForm.region.$touched && contactoForm.region.$invalid}">
                             <option value="">— Seleccione una región —</option>
-                            <option ng-repeat="r in vm.regiones" value="{{ r.id }}">{{ r.nombre_region }}</option>
                         </select>
                         <div class="invalid-feedback">La región es requerida.</div>
                     </div>
@@ -69,12 +69,12 @@
                         <label class="font-weight-bold">Provincia <span class="text-danger">*</span></label>
                         <select class="form-control"
                                 ng-model="vm.form.id_provincia"
+                                ng-options="p.id as p.nombre_provincia for p in vm.provincias"
                                 required
                                 name="provincia"
                                 ng-disabled="!vm.selectedRegionId"
                                 ng-class="{'is-invalid': contactoForm.provincia.$touched && contactoForm.provincia.$invalid}">
                             <option value="">— Seleccione una provincia —</option>
-                            <option ng-repeat="p in vm.provincias" value="{{ p.id }}">{{ p.nombre_provincia }}</option>
                         </select>
                         <div class="invalid-feedback">La provincia es requerida.</div>
                     </div>
