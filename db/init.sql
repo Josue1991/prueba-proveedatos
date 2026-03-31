@@ -24,12 +24,25 @@ CREATE TABLE IF NOT EXISTS Provincia (
 
 -- ── Tabla contacto ────────────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS contacto (
-    id           INT AUTO_INCREMENT PRIMARY KEY,
-    nombre       VARCHAR(100) NOT NULL,
-    email        VARCHAR(100) NOT NULL,
-    telefono     VARCHAR(20)  NOT NULL,
-    id_provincia INT,
-    created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    id               INT AUTO_INCREMENT PRIMARY KEY,
+    codigo_empleado  VARCHAR(20),
+    cedula           VARCHAR(10),
+    nombre           VARCHAR(100) NOT NULL,
+    apellidos        VARCHAR(100),
+    email            VARCHAR(100) NOT NULL,
+    telefono         VARCHAR(20)  NOT NULL,
+    id_provincia     INT,
+    fecha_nacimiento DATE,
+    observaciones    TEXT,
+    fotografia      MEDIUMBLOB,
+    fotografia_mime VARCHAR(50),
+    fecha_ingreso    DATE,
+    cargo            VARCHAR(100),
+    departamento     VARCHAR(100),
+    sueldo           DECIMAL(10,2),
+    jornada_parcial  TINYINT(1),
+    obs_laboral      TEXT,
+    created_at       TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (id_provincia) REFERENCES Provincia(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 

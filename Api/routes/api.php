@@ -7,6 +7,8 @@ $router->addRoute('GET',    '/api/contactos/{id}',        'ContactoController', 
 $router->addRoute('POST',   '/api/contactos',             'ContactoController', 'store');
 $router->addRoute('PUT',    '/api/contactos/{id}',        'ContactoController', 'update');
 $router->addRoute('DELETE', '/api/contactos/{id}',        'ContactoController', 'destroy');
+$router->addRoute('GET',    '/api/contactos/{id}/foto',   'ContactoController', 'getFoto');
+$router->addRoute('POST',   '/api/contactos/{id}/foto',   'ContactoController', 'uploadFoto');
 
 // Export (registered before {id} but {id} only matches digits so no conflict)
 $router->addRoute('GET',    '/api/contactos/export',      'ReporteController',  'export');

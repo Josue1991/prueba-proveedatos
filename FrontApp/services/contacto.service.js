@@ -30,6 +30,20 @@ angular
                 return $http.delete(API + '/' + id);
             },
 
+            // ── Foto ─────────────────────────────────────────────────────
+            uploadFoto: function (id, file) {
+                var fd = new FormData();
+                fd.append('foto', file);
+                return $http.post(API + '/' + id + '/foto', fd, {
+                    transformRequest: angular.identity,
+                    headers: { 'Content-Type': undefined }
+                });
+            },
+
+            fotoUrl: function (id) {
+                return API + '/' + id + '/foto';
+            },
+
             // ── Export URL builder (opened in new tab by controller) ─────
             exportUrl: function (format, orderBy, dir) {
                 return API + '/export?format=' + format

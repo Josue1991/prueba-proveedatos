@@ -78,6 +78,58 @@ class ContactoController extends Controller
         $this->jsonResponse(Response::success(null, 204), 204);
     }
 
+    // POST /api/contactos/{id}/foto
+    public function uploadFoto(string $id): void
+    {
+        $existing = $this->model->getById((int) $id);
+        if (!$existing) {
+            $this->jsonResponse(Response::error('Contacto no encontrado', 404), 404);
+            return;
+        }
+
+        if (empty($_FILES['foto']) || $_FILES['foto']['error'] !== UPLOAD_ERR_OK) {
+            $this->jsonResponse(Response::error('No se recibió ningún archivo válido', 422), 422);
+            return;
+        }
+
+        $file    = $_FILES['foto'];
+        $allowed = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+        $finfo   = finfo_open(FILEINFO_MIME_TYPE);
+        $mime    = finfo_file($finfo, $file['tmp_name']);
+        finfo_close($finfo);
+
+        if (!in_array($mime, $allowed, true)) {
+            $this->jsonResponse(Response::error('Solo se permiten imágenes (jpg, png, gif, webp)', 422), 422);
+            return;
+        }
+
+        $blob = file_get_contents($file['tmp_name']);
+        if ($blob === false) {
+            $this->jsonResponse(Response::error('Error al leer el archivo', 500), 500);
+            return;
+        }
+
+        $contacto = $this->model->updateFoto((int) $id, $blob, $mime);
+        $this->jsonResponse(Response::success($contacto));
+    }
+
+    // GET /api/contactos/{id}/foto
+    public function getFoto(string $id): void
+    {
+        $row = $this->model->getFoto((int) $id);
+
+        if (!$row || empty($row['fotografia'])) {
+            http_response_code(404);
+            echo json_encode(['error' => 'Sin fotografía']);
+            return;
+        }
+
+        header('Content-Type: ' . ($row['fotografia_mime'] ?? 'image/jpeg'));
+        header('Cache-Control: public, max-age=86400');
+        header('Content-Length: ' . strlen($row['fotografia']));
+        echo $row['fotografia'];
+    }
+
     // ---------------------------------------------------------------
     private function validate(array $data, ?string &$error): bool
     {
@@ -112,6 +164,17 @@ class ContactoController extends Controller
             return false;
         }
 
+        if (!empty($data['fecha_nacimiento']) && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $data['fecha_nacimiento'])) {
+            $error = 'La fecha de nacimiento debe tener el formato YYYY-MM-DD';
+            return false;
+        }
+
+        if (!empty($data['fecha_ingreso']) && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $data['fecha_ingreso'])) {
+            $error = 'La fecha de ingreso debe tener el formato YYYY-MM-DD';
+            return false;
+        }
+
         return true;
     }
 }
+

@@ -1,102 +1,272 @@
-<div class="row justify-content-center">
-    <div class="col-md-7">
-        <div class="card shadow-sm">
-            <div class="card-header bg-primary text-white">
-                <h5 class="mb-0"><i class="bi bi-person-fill"></i> {{ vm.title }}</h5>
+﻿<div class="row justify-content-center">
+    <div class="col-md-9 col-lg-8">
+
+        <!-- Header azul -->
+        <div class="text-center py-3 rounded-top" style="background-color:#5dade2;">
+            <h5 class="mb-0 text-white font-weight-bold">
+                {{ vm.edit ? 'EDITAR EMPLEADO' : 'CREAR EMPLEADO NUEVO' }}
+            </h5>
+        </div>
+
+        <div class="card border-top-0 shadow-sm" style="border-top-left-radius:0;border-top-right-radius:0;">
+
+            <!-- Tabs -->
+            <div class="card-header bg-white pb-0 border-bottom-0">
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link" href
+                           ng-class="{active: vm.activeTab === 'personales'}"
+                           ng-click="vm.setTab('personales')">Datos Personales</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href
+                           ng-class="{active: vm.activeTab === 'laborales'}"
+                           ng-click="vm.setTab('laborales')">Datos Laborales</a>
+                    </li>
+                </ul>
             </div>
-            <div class="card-body">
 
-                <div ng-if="vm.error" class="alert alert-danger">{{ vm.error }}</div>
+            <div class="card-body pt-3">
 
-                <form name="contactoForm" ng-submit="vm.submit()" novalidate>
+                <div ng-if="vm.error" class="alert alert-danger alert-dismissible">
+                    <button type="button" class="close" ng-click="vm.error=null"><span>&times;</span></button>
+                    {{ vm.error }}
+                </div>
 
-                    <!-- Nombre -->
-                    <div class="form-group">
-                        <label class="font-weight-bold">Nombre <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control"
-                               ng-model="vm.form.nombre"
-                               required maxlength="100"
-                               ng-class="{'is-invalid': contactoForm.nombre.$touched && contactoForm.nombre.$invalid}"
-                               name="nombre"
-                               placeholder="Ej: Juan Pérez">
-                        <div class="invalid-feedback">El nombre es requerido.</div>
-                    </div>
+                <form name="contactoForm" novalidate>
 
-                    <!-- Email -->
-                    <div class="form-group">
-                        <label class="font-weight-bold">Email <span class="text-danger">*</span></label>
-                        <input type="email" class="form-control"
-                               ng-model="vm.form.email"
-                               required maxlength="100"
-                               ng-class="{'is-invalid': contactoForm.email.$touched && contactoForm.email.$invalid}"
-                               name="email"
-                               placeholder="Ej: usuario@dominio.com">
-                        <div class="invalid-feedback">Ingresa un email válido (ej: usuario@dominio.com).</div>
-                    </div>
+                    <!-- ══════════ TAB: Datos Personales ══════════ -->
+                    <div ng-show="vm.activeTab === 'personales'">
 
-                    <!-- Teléfono -->
-                    <div class="form-group">
-                        <label class="font-weight-bold">Teléfono <span class="text-danger">*</span></label>
-                        <input type="tel" class="form-control"
-                               ng-model="vm.form.telefono"
-                               required maxlength="20" minlength="7"
-                               ng-pattern="/^[0-9+\-\s()]{7,20}$/"
-                               ng-class="{'is-invalid': contactoForm.telefono.$touched && contactoForm.telefono.$invalid}"
-                               name="telefono"
-                               placeholder="Ej: +593987654321">
-                        <div class="invalid-feedback">
-                            Solo números, +, -, espacios y paréntesis (7-20 caracteres).
+                        <!-- Fila 1: Nombres | Apellidos -->
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label>Nombres <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control"
+                                       ng-model="vm.form.nombre"
+                                       required maxlength="100"
+                                       name="nombre"
+                                       ng-class="{'is-invalid': (contactoForm.nombre.$touched || contactoForm.$submitted) && contactoForm.nombre.$invalid}">
+                                <div class="invalid-feedback">El nombre es requerido.</div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>Apellidos</label>
+                                <input type="text" class="form-control"
+                                       ng-model="vm.form.apellidos"
+                                       maxlength="100"
+                                       name="apellidos">
+                            </div>
                         </div>
+
+                        <!-- Fila 2: Cedula | Provincia -->
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label>Cedula: <small class="text-muted font-weight-normal">(Valida)</small></label>
+                                <input type="text" class="form-control"
+                                       ng-model="vm.form.cedula"
+                                       maxlength="10"
+                                       name="cedula"
+                                       cedula-ec
+                                       ng-class="{'is-invalid': (contactoForm.cedula.$touched || contactoForm.$submitted) && contactoForm.cedula.$invalid}">
+                                <div class="invalid-feedback">Cedula ecuatoriana invalida (10 digitos).</div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>Provincia</label>
+                                <select class="form-control"
+                                        ng-model="vm.form.id_provincia"
+                                        name="id_provincia"
+                                        ng-options="p.id as p.nombre_provincia for p in vm.provincias">
+                                    <option value="">Escoja una provincia...</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Fila 3: Fecha Nacimiento | Email -->
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label>Fecha de Nacimiento</label>
+                                <input type="date" class="form-control"
+                                       ng-model="vm.form.fecha_nacimiento"
+                                       name="fecha_nacimiento">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>Email: <small class="text-muted font-weight-normal">(Valida)</small> <span class="text-danger">*</span></label>
+                                <input type="email" class="form-control"
+                                       ng-model="vm.form.email"
+                                       required maxlength="100"
+                                       name="email"
+                                       ng-class="{'is-invalid': (contactoForm.email.$touched || contactoForm.$submitted) && contactoForm.email.$invalid}"
+                                       placeholder="correo-personal@email.com">
+                                <div class="invalid-feedback">Ingresa un email valido.</div>
+                            </div>
+                        </div>
+
+                        <!-- Fila 4: Observaciones | Fotografia -->
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label>Observaciones:</label>
+                                <textarea class="form-control"
+                                          ng-model="vm.form.observaciones"
+                                          rows="4"
+                                          placeholder="Comentario u observacion referente a la ficha personal"></textarea>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>Fotografia:</label>
+                                <div class="d-flex align-items-center mt-1">
+                                    <div class="rounded-circle mr-3 d-flex align-items-center justify-content-center bg-light overflow-hidden"
+                                         style="width:80px;height:80px;min-width:80px;border:1px solid #dee2e6;">
+                                        <img ng-if="vm.fotoPreview || vm.form.tiene_foto"
+                                             ng-src="{{ vm.fotoPreview || ('http://localhost:8080/api/contactos/' + vm.form.id + '/foto') }}"
+                                             style="width:100%;height:100%;object-fit:cover;"
+                                             alt="foto">
+                                        <i ng-if="!vm.fotoPreview && !vm.form.tiene_foto"
+                                           class="bi bi-person-fill text-secondary"
+                                           style="font-size:3rem;"></i>
+                                    </div>
+                                    <label class="btn btn-info mb-0" for="fotoInput" style="cursor:pointer;">
+                                        <i class="bi bi-upload mr-1"></i> Cargar Imagen
+                                    </label>
+                                    <input type="file" id="fotoInput" class="d-none"
+                                           name="fotografia"
+                                           accept="image/jpeg,image/png,image/gif,image/webp"
+                                           file-model="vm.fotoFile">
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
 
-                    <!-- Región -->
-                    <div class="form-group">
-                        <label class="font-weight-bold">Región <span class="text-danger">*</span></label>
-                        <select class="form-control"
-                                ng-model="vm.selectedRegionId"
-                                ng-options="r.id as r.nombre_region for r in vm.regiones"
-                                ng-change="vm.onRegionChange()"
-                                required
-                                name="region"
-                                ng-class="{'is-invalid': contactoForm.region.$touched && contactoForm.region.$invalid}">
-                            <option value="">— Seleccione una región —</option>
-                        </select>
-                        <div class="invalid-feedback">La región es requerida.</div>
+                    <!-- ══════════ TAB: Datos Laborales ══════════ -->
+                    <div ng-show="vm.activeTab === 'laborales'">
+
+                        <!-- Fila 1: Fecha Ingreso | Cargo -->
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label>Fecha de Ingreso</label>
+                                <input type="date" class="form-control"
+                                       ng-model="vm.form.fecha_ingreso"
+                                       name="fecha_ingreso">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>Cargo</label>
+                                <input type="text" class="form-control"
+                                       ng-model="vm.form.cargo"
+                                       maxlength="100"
+                                       name="cargo">
+                            </div>
+                        </div>
+
+                        <!-- Fila 2: Departamento | Provincia -->
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label>Departamento:</label>
+                                <input type="text" class="form-control"
+                                       ng-model="vm.form.departamento"
+                                       maxlength="100"
+                                       name="departamento">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>Provincia:</label>
+                                <select class="form-control"
+                                        ng-model="vm.form.id_provincia"
+                                        ng-options="p.id as p.nombre_provincia for p in vm.provincias">
+                                    <option value="">Escoja una provincia...</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Fila 3: Sueldo | Jornada Parcial -->
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label>Sueldo:</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control text-right"
+                                           ng-model="vm.form.sueldo"
+                                           min="0" step="0.01"
+                                           name="sueldo"
+                                           placeholder="530.00">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text font-weight-bold">USD</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>Jornada Parcial</label>
+                                <div class="mt-2">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio"
+                                               name="jornada_parcial" id="jornadaSi"
+                                               ng-model="vm.form.jornada_parcial"
+                                               ng-value="1">
+                                        <label class="form-check-label" for="jornadaSi">Si</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio"
+                                               name="jornada_parcial" id="jornadaNo"
+                                               ng-model="vm.form.jornada_parcial"
+                                               ng-value="0">
+                                        <label class="form-check-label" for="jornadaNo">No</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Fila 4: Telefono (required) -->
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label>Telefono <span class="text-danger">*</span></label>
+                                <input type="tel" class="form-control"
+                                       ng-model="vm.form.telefono"
+                                       required maxlength="20" minlength="7"
+                                       ng-pattern="/^[0-9+\-\s()]{7,20}$/"
+                                       ng-class="{'is-invalid': (contactoForm.telefono.$touched || contactoForm.$submitted) && contactoForm.telefono.$invalid}"
+                                       name="telefono"
+                                       placeholder="Ej: +593987654321">
+                                <div class="invalid-feedback">
+                                    Solo numeros, +, -, espacios y parentesis (7-20 caracteres).
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Fila 5: Observaciones laboral (ancho completo) -->
+                        <div class="form-row">
+                            <div class="form-group col-12">
+                                <label>Observaciones:</label>
+                                <textarea class="form-control"
+                                          ng-model="vm.form.obs_laboral"
+                                          rows="4"
+                                          name="obs_laboral"
+                                          placeholder="Comentario u observacion referente a LA FICHA LABORAL"></textarea>
+                            </div>
+                        </div>
+
                     </div>
 
-                    <!-- Provincia -->
-                    <div class="form-group">
-                        <label class="font-weight-bold">Provincia <span class="text-danger">*</span></label>
-                        <select class="form-control"
-                                ng-model="vm.form.id_provincia"
-                                ng-options="p.id as p.nombre_provincia for p in vm.provincias"
-                                required
-                                name="provincia"
-                                ng-disabled="!vm.selectedRegionId"
-                                ng-class="{'is-invalid': contactoForm.provincia.$touched && contactoForm.provincia.$invalid}">
-                            <option value="">— Seleccione una provincia —</option>
-                        </select>
-                        <div class="invalid-feedback">La provincia es requerida.</div>
-                    </div>
-
-                    <div class="d-flex">
-                        <button type="submit" class="btn btn-primary mr-2"
-                                ng-disabled="contactoForm.$invalid || vm.saving">
-                            <span ng-if="vm.saving">
-                                <span class="spinner-border spinner-border-sm"></span> Guardando…
-                            </span>
-                            <span ng-if="!vm.saving">
-                                <i class="bi bi-floppy"></i> Guardar
-                            </span>
+                    <!-- ══════════ Botones ══════════ -->
+                    <div class="text-center mt-3 pt-3 border-top">
+                        <!-- Tab Personales: Continuar -->
+                        <button ng-show="vm.activeTab === 'personales'"
+                                type="button" class="btn btn-success px-4 mr-2"
+                                ng-click="vm.continuar()">
+                            Continuar
                         </button>
-                        <button type="button" class="btn btn-secondary"
+                        <!-- Tab Laborales: Guardar -->
+                        <button ng-show="vm.activeTab === 'laborales'"
+                                type="button" class="btn btn-success px-4 mr-2"
+                                ng-click="vm.guardar()"
+                                ng-disabled="vm.saving">
+                            <span ng-if="vm.saving" class="spinner-border spinner-border-sm mr-1"></span>
+                            {{ vm.saving ? 'Guardando...' : 'Guardar' }}
+                        </button>
+                        <button type="button" class="btn btn-danger px-4"
                                 ng-click="vm.cancelar()">
-                            <i class="bi bi-x-circle"></i> Cancelar
+                            Salir
                         </button>
                     </div>
 
                 </form>
             </div>
         </div>
+
     </div>
 </div>
