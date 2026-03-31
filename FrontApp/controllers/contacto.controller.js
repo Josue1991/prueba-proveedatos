@@ -81,10 +81,40 @@ angular
             vm.error  = null;
             vm.saving = false;
 
+            vm.regiones   = [];
+            vm.provincias = [];
+            vm.selectedRegionId = null;
+
+            // Cargar regiones al iniciar
+            ContactoService.getRegiones()
+                .then(function (res) {
+                    vm.regiones = res.data.data;
+                });
+
+            // Cuando cambia la región: resetea provincia y carga las de esa región
+            vm.onRegionChange = function () {
+                vm.form.id_provincia = null;
+                vm.provincias = [];
+                if (vm.selectedRegionId) {
+                    ContactoService.getProvincias(vm.selectedRegionId)
+                        .then(function (res) {
+                            vm.provincias = res.data.data;
+                        });
+                }
+            };
+
             if (vm.edit) {
                 ContactoService.getById($routeParams.id)
                     .then(function (res) {
                         vm.form = res.data.data;
+                        // Restaurar región seleccionada y cargar provincias
+                        if (vm.form.id_region) {
+                            vm.selectedRegionId = vm.form.id_region;
+                            ContactoService.getProvincias(vm.selectedRegionId)
+                                .then(function (res2) {
+                                    vm.provincias = res2.data.data;
+                                });
+                        }
                     })
                     .catch(function () {
                         vm.error = 'No se pudo cargar el contacto.';

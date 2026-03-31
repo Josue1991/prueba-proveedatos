@@ -46,9 +46,10 @@
                             <th ng-click="vm.sortBy('telefono')" ng-class="vm.thClass('telefono')">
                                 Teléfono <i ng-class="vm.sortIcon('telefono')"></i>
                             </th>
-                            <th ng-click="vm.sortBy('ciudad')" ng-class="vm.thClass('ciudad')">
-                                Ciudad <i ng-class="vm.sortIcon('ciudad')"></i>
+                            <th ng-click="vm.sortBy('id_provincia')" ng-class="vm.thClass('id_provincia')">
+                                Provincia <i ng-class="vm.sortIcon('id_provincia')"></i>
                             </th>
+                            <th>Región</th>
                             <th ng-click="vm.sortBy('created_at')" ng-class="vm.thClass('created_at')">
                                 Registrado <i ng-class="vm.sortIcon('created_at')"></i>
                             </th>
@@ -61,7 +62,8 @@
                             <td>{{ c.nombre }}</td>
                             <td>{{ c.email }}</td>
                             <td>{{ c.telefono }}</td>
-                            <td>{{ c.ciudad || '—' }}</td>
+                            <td>{{ c.nombre_provincia || '—' }}</td>
+                            <td>{{ c.nombre_region || '—' }}</td>
                             <td>{{ c.created_at | date:'dd/MM/yyyy HH:mm' }}</td>
                             <td class="text-center action-buttons">
                                 <button class="btn btn-outline-info btn-sm"

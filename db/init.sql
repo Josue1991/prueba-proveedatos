@@ -2,16 +2,6 @@
 CREATE DATABASE IF NOT EXISTS proovedatos CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE proovedatos;
 
--- Tabla contacto
-CREATE TABLE IF NOT EXISTS contacto (
-    id         INT AUTO_INCREMENT PRIMARY KEY,
-    nombre     VARCHAR(100)  NOT NULL,
-    email      VARCHAR(100)  NOT NULL,
-    telefono   VARCHAR(20)   NOT NULL,
-    ciudad     VARCHAR(100),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
 -- ── Tabla Region ──────────────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS Region (
     id            INT AUTO_INCREMENT PRIMARY KEY,
@@ -32,6 +22,17 @@ CREATE TABLE IF NOT EXISTS Provincia (
     FOREIGN KEY (id_region) REFERENCES Region(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- ── Tabla contacto ────────────────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS contacto (
+    id           INT AUTO_INCREMENT PRIMARY KEY,
+    nombre       VARCHAR(100) NOT NULL,
+    email        VARCHAR(100) NOT NULL,
+    telefono     VARCHAR(20)  NOT NULL,
+    id_provincia INT,
+    created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_provincia) REFERENCES Provincia(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- ── Tabla reporte ─────────────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS reporte (
     id              INT AUTO_INCREMENT PRIMARY KEY,
@@ -42,5 +43,4 @@ CREATE TABLE IF NOT EXISTS reporte (
     estado          ENUM('pendiente','aprobado','rechazado') NOT NULL DEFAULT 'pendiente',
     created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
 

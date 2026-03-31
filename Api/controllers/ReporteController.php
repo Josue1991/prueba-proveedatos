@@ -5,7 +5,7 @@ class ReporteController extends Controller
     private ReporteModel  $reporteModel;
     private ContactoModel $contactoModel;
 
-    private const ALLOWED_FIELDS = ['id', 'nombre', 'email', 'telefono', 'ciudad', 'created_at'];
+    private const ALLOWED_FIELDS = ['id', 'nombre', 'email', 'telefono', 'id_provincia', 'created_at'];
 
     public function __construct()
     {
@@ -72,7 +72,7 @@ class ReporteController extends Controller
         header('Pragma: no-cache');
         header('Expires: 0');
 
-        $headers = ['ID', 'Nombre', 'Email', 'Teléfono', 'Ciudad', 'Fecha de registro'];
+        $headers = ['ID', 'Nombre', 'Email', 'Teléfono', 'Provincia', 'Región', 'Fecha de registro'];
 
         $headerCells = '';
         foreach ($headers as $h) {
@@ -82,12 +82,13 @@ class ReporteController extends Controller
         $dataRows = '';
         foreach ($contactos as $c) {
             $dataRows .= '<Row>'
-                . '<Cell><Data ss:Type="Number">'  . (int) $c['id']                                       . '</Data></Cell>'
-                . '<Cell><Data ss:Type="String">'  . htmlspecialchars($c['nombre'],           ENT_XML1, 'UTF-8') . '</Data></Cell>'
-                . '<Cell><Data ss:Type="String">'  . htmlspecialchars($c['email'],            ENT_XML1, 'UTF-8') . '</Data></Cell>'
-                . '<Cell><Data ss:Type="String">'  . htmlspecialchars($c['telefono'],         ENT_XML1, 'UTF-8') . '</Data></Cell>'
-                . '<Cell><Data ss:Type="String">'  . htmlspecialchars($c['ciudad'] ?? '',     ENT_XML1, 'UTF-8') . '</Data></Cell>'
-                . '<Cell><Data ss:Type="String">'  . htmlspecialchars($c['created_at'],       ENT_XML1, 'UTF-8') . '</Data></Cell>'
+                . '<Cell><Data ss:Type="Number">'  . (int) $c['id']                                                        . '</Data></Cell>'
+                . '<Cell><Data ss:Type="String">'  . htmlspecialchars($c['nombre'],                      ENT_XML1, 'UTF-8') . '</Data></Cell>'
+                . '<Cell><Data ss:Type="String">'  . htmlspecialchars($c['email'],                       ENT_XML1, 'UTF-8') . '</Data></Cell>'
+                . '<Cell><Data ss:Type="String">'  . htmlspecialchars($c['telefono'],                    ENT_XML1, 'UTF-8') . '</Data></Cell>'
+                . '<Cell><Data ss:Type="String">'  . htmlspecialchars($c['nombre_provincia'] ?? '',      ENT_XML1, 'UTF-8') . '</Data></Cell>'
+                . '<Cell><Data ss:Type="String">'  . htmlspecialchars($c['nombre_region']    ?? '',      ENT_XML1, 'UTF-8') . '</Data></Cell>'
+                . '<Cell><Data ss:Type="String">'  . htmlspecialchars($c['created_at'],                 ENT_XML1, 'UTF-8') . '</Data></Cell>'
                 . '</Row>';
         }
 
@@ -109,6 +110,7 @@ class ReporteController extends Controller
       <Column ss:Width="120"/>
       <Column ss:Width="160"/>
       <Column ss:Width="100"/>
+      <Column ss:Width="120"/>
       <Column ss:Width="100"/>
       <Column ss:Width="140"/>
       <Row>{$headerCells}</Row>

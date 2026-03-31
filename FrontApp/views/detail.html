@@ -16,8 +16,11 @@
                     <dt class="col-sm-4">Teléfono</dt>
                     <dd class="col-sm-8">{{ vm.contacto.telefono }}</dd>
 
-                    <dt class="col-sm-4">Ciudad</dt>
-                    <dd class="col-sm-8">{{ vm.contacto.ciudad || '—' }}</dd>
+                    <dt class="col-sm-4">Región</dt>
+                    <dd class="col-sm-8">{{ vm.contacto.nombre_region || '—' }}</dd>
+
+                    <dt class="col-sm-4">Provincia</dt>
+                    <dd class="col-sm-8">{{ vm.contacto.nombre_provincia || '—' }}</dd>
 
                     <dt class="col-sm-4">Registrado</dt>
                     <dd class="col-sm-8">{{ vm.contacto.created_at | date:'dd/MM/yyyy HH:mm' }}</dd>

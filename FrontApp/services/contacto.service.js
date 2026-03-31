@@ -6,6 +6,7 @@ angular
 
         var API       = 'http://localhost:8080/api/contactos';
         var API_REP   = 'http://localhost:8080/api/reportes';
+        var API_BASE  = 'http://localhost:8080/api';
 
         return {
             // ── Contactos ────────────────────────────────────────────────
@@ -36,6 +37,19 @@ angular
                     + '&dir=' + dir;
             },
 
+            // ── Catálogos ─────────────────────────────────────────────────
+            getRegiones: function () {
+                return $http.get(API_BASE + '/regiones');
+            },
+
+            getProvincias: function (regionId) {
+                var url = API_BASE + '/provincias';
+                if (regionId) {
+                    url += '?region_id=' + regionId;
+                }
+                return $http.get(url);
+            },
+
             // ── Reportes ─────────────────────────────────────────────────
             getReportes: function () {
                 return $http.get(API_REP);
@@ -46,3 +60,4 @@ angular
             }
         };
     }]);
+

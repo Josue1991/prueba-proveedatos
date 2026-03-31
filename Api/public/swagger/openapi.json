@@ -141,6 +141,27 @@
           "422": { "description": "Estado inválido",    "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
         }
       }
+    },
+    "/api/regiones": {
+      "get": {
+        "tags": ["Catálogos"],
+        "summary": "Listar todas las regiones",
+        "responses": {
+          "200": { "description": "Lista de regiones", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/RegionListResponse" } } } }
+        }
+      }
+    },
+    "/api/provincias": {
+      "get": {
+        "tags": ["Catálogos"],
+        "summary": "Listar provincias (opcionalmente filtradas por región)",
+        "parameters": [
+          { "name": "region_id", "in": "query", "required": false, "schema": { "type": "integer" }, "description": "Filtrar por ID de región" }
+        ],
+        "responses": {
+          "200": { "description": "Lista de provincias", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ProvinciaListResponse" } } } }
+        }
+      }
     }
   },
   "components": {
@@ -148,22 +169,41 @@
       "Contacto": {
         "type": "object",
         "properties": {
-          "id":         { "type": "integer",  "example": 1 },
-          "nombre":     { "type": "string",   "example": "Juan Pérez" },
-          "email":      { "type": "string",   "format": "email", "example": "juan@example.com" },
-          "telefono":   { "type": "string",   "example": "+593987654321" },
-          "ciudad":     { "type": "string",   "nullable": true, "example": "Quito" },
-          "created_at": { "type": "string",   "format": "date-time" }
+          "id":               { "type": "integer",  "example": 1 },
+          "nombre":          { "type": "string",   "example": "Juan Pérez" },
+          "email":           { "type": "string",   "format": "email", "example": "juan@example.com" },
+          "telefono":        { "type": "string",   "example": "+593987654321" },
+          "id_provincia":    { "type": "integer",  "nullable": true, "example": 1 },
+          "nombre_provincia":{ "type": "string",   "nullable": true, "example": "Pichincha" },
+          "nombre_region":   { "type": "string",   "nullable": true, "example": "Sierra" },
+          "id_region":       { "type": "integer",  "nullable": true, "example": 1 },
+          "created_at":      { "type": "string",   "format": "date-time" }
         }
       },
       "ContactoInput": {
         "type": "object",
         "required": ["nombre","email","telefono"],
         "properties": {
-          "nombre":   { "type": "string", "maxLength": 100 },
-          "email":    { "type": "string", "format": "email", "maxLength": 100 },
-          "telefono": { "type": "string", "maxLength": 20,   "example": "+593987654321" },
-          "ciudad":   { "type": "string", "maxLength": 100,  "nullable": true }
+          "nombre":       { "type": "string", "maxLength": 100 },
+          "email":        { "type": "string", "format": "email", "maxLength": 100 },
+          "telefono":     { "type": "string", "maxLength": 20,   "example": "+593987654321" },
+          "id_provincia": { "type": "integer", "nullable": true, "example": 1 }
+        }
+      },
+      "Region": {
+        "type": "object",
+        "properties": {
+          "id":            { "type": "integer", "example": 1 },
+          "nombre_region": { "type": "string",  "example": "Sierra" }
+        }
+      },
+      "Provincia": {
+        "type": "object",
+        "properties": {
+          "id":               { "type": "integer", "example": 1 },
+          "nombre_provincia": { "type": "string",  "example": "Pichincha" },
+          "capital_provincia":{ "type": "string",  "example": "Quito" },
+          "id_region":        { "type": "integer", "example": 1 }
         }
       },
       "Reporte": {
@@ -182,6 +222,8 @@
       "ContactoListResponse": { "type": "object", "properties": { "success": { "type": "boolean" }, "data": { "type": "array", "items": { "$ref": "#/components/schemas/Contacto" } } } },
       "ReporteResponse":      { "type": "object", "properties": { "success": { "type": "boolean" }, "data": { "$ref": "#/components/schemas/Reporte" } } },
       "ReporteListResponse":  { "type": "object", "properties": { "success": { "type": "boolean" }, "data": { "type": "array",  "items": { "$ref": "#/components/schemas/Reporte" } } } },
+      "RegionListResponse":   { "type": "object", "properties": { "success": { "type": "boolean" }, "data": { "type": "array",  "items": { "$ref": "#/components/schemas/Region" } } } },
+      "ProvinciaListResponse":{ "type": "object", "properties": { "success": { "type": "boolean" }, "data": { "type": "array",  "items": { "$ref": "#/components/schemas/Provincia" } } } },
       "ErrorResponse":        { "type": "object", "properties": { "success": { "type": "boolean", "example": false }, "error": { "type": "string" } } }
     }
   }

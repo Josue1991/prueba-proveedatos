@@ -14,3 +14,7 @@ $router->addRoute('GET',    '/api/contactos/export',      'ReporteController',  
 // Reportes
 $router->addRoute('GET',    '/api/reportes',              'ReporteController',  'index');
 $router->addRoute('PUT',    '/api/reportes/{id}',         'ReporteController',  'updateEstado');
+
+// Catálogos
+$router->addRoute('GET',    '/api/regiones',              'CatalogoController', 'regiones');
+$router->addRoute('GET',    '/api/provincias',            'CatalogoController', 'provincias');

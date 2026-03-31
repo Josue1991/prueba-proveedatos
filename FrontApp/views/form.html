@@ -49,14 +49,34 @@
                         </div>
                     </div>
 
-                    <!-- Ciudad -->
+                    <!-- Región -->
                     <div class="form-group">
-                        <label class="font-weight-bold">Ciudad</label>
-                        <input type="text" class="form-control"
-                               ng-model="vm.form.ciudad"
-                               maxlength="100"
-                               name="ciudad"
-                               placeholder="Ej: Quito">
+                        <label class="font-weight-bold">Región <span class="text-danger">*</span></label>
+                        <select class="form-control"
+                                ng-model="vm.selectedRegionId"
+                                ng-change="vm.onRegionChange()"
+                                required
+                                name="region"
+                                ng-class="{'is-invalid': contactoForm.region.$touched && contactoForm.region.$invalid}">
+                            <option value="">— Seleccione una región —</option>
+                            <option ng-repeat="r in vm.regiones" value="{{ r.id }}">{{ r.nombre_region }}</option>
+                        </select>
+                        <div class="invalid-feedback">La región es requerida.</div>
+                    </div>
+
+                    <!-- Provincia -->
+                    <div class="form-group">
+                        <label class="font-weight-bold">Provincia <span class="text-danger">*</span></label>
+                        <select class="form-control"
+                                ng-model="vm.form.id_provincia"
+                                required
+                                name="provincia"
+                                ng-disabled="!vm.selectedRegionId"
+                                ng-class="{'is-invalid': contactoForm.provincia.$touched && contactoForm.provincia.$invalid}">
+                            <option value="">— Seleccione una provincia —</option>
+                            <option ng-repeat="p in vm.provincias" value="{{ p.id }}">{{ p.nombre_provincia }}</option>
+                        </select>
+                        <div class="invalid-feedback">La provincia es requerida.</div>
                     </div>
 
                     <div class="d-flex">

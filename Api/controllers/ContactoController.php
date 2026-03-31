@@ -102,9 +102,13 @@ class ContactoController extends Controller
 
         if (strlen($data['nombre']) > 100 || strlen($data['email']) > 100
             || strlen($data['telefono']) > 20
-            || (isset($data['ciudad']) && strlen($data['ciudad']) > 100)
         ) {
             $error = 'Uno o más campos superan la longitud máxima permitida';
+            return false;
+        }
+
+        if (!empty($data['id_provincia']) && !filter_var($data['id_provincia'], FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]])) {
+            $error = 'El campo id_provincia debe ser un número entero positivo';
             return false;
         }
 

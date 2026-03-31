@@ -23,8 +23,11 @@ require_once $base . '/core/Router.php';
 require_once $base . '/helpers/Response.php';
 require_once $base . '/models/ContactoModel.php';
 require_once $base . '/models/ReporteModel.php';
+require_once $base . '/models/RegionModel.php';
+require_once $base . '/models/ProvinciaModel.php';
 require_once $base . '/controllers/ContactoController.php';
 require_once $base . '/controllers/ReporteController.php';
+require_once $base . '/controllers/CatalogoController.php';
 
 // ── Routing ───────────────────────────────────────────────────────────────
 $router = new Router();
